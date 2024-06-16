@@ -1,0 +1,11 @@
+{
+  "name": "story-mapping-generator-monorepo",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
