@@ -1,0 +1,25 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v1
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Type check
+        run: bun run check
+      - name: Lint
+        if: (${{ success() }} || ${{ failure() }}) # ensures this step runs even if previous steps fail (avoids multiple runs uncovering different issues at different steps)
+        run: bun run lint
+      - name: Build and check generated types
+        if: (${{ success() }} || ${{ failure() }}) # ensures this step runs even if previous steps fail
+        run: bun run build && { [ "`git status --porcelain=v1`" == "" ] || (echo "Generated types have changed — please regenerate types locally and commit the changes after you have reviewed them"; git diff; exit 1); }
