@@ -2,8 +2,6 @@
 	import '../app.css';
 </script>
 
-<slot></slot>
-
-<slot></slot>
-
-<style></style>
+<main class="h-screen text-base-content">
+	<slot />
+</main>
