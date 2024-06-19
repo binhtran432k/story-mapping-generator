@@ -6,3 +6,10 @@
 	<Navbar />
 	TODO: Add body
 </div>
+
+<style>
+	:root {
+		/* Fix modal scrollbar gutter overrided by daisyui */
+		scrollbar-gutter: initial !important;
+	}
+</style>

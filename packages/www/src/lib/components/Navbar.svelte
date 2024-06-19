@@ -4,6 +4,7 @@
 	import Privacy from './Privacy.svelte';
 	import Github from '$lib/icons/Github.svelte';
 	import clsx from 'clsx';
+	import Shield from '$lib/icons/Shield.svelte';
 
 	let isMenuOpen = false;
 	function toggleMenu() {
@@ -48,21 +49,22 @@
 
 	<div
 		class={clsx(
-			'w-full bg-primary lg:flex lg:w-auto lg:items-center',
-			isMenuOpen ? 'absolute left-0 top-full flex p-2' : 'hidden'
+			'text w-full bg-primary uppercase lg:flex lg:w-auto lg:items-center',
+			isMenuOpen ? 'absolute left-0 top-full flex p-2 lg:static lg:p-0' : 'hidden'
 		)}
-		id="menua"
 	>
 		<!-- <Theme /> -->
-		<ul class="w-full items-center justify-between pt-2 text-base lg:flex lg:pt-0">
+		<ul class="w-full items-center justify-between pt-2 lg:flex lg:pt-0">
 			<li>
-				<Privacy />
+				<Privacy class="btn btn-ghost w-full">
+					<Shield class="text-xl" /> Security
+				</Privacy>
 			</li>
 			{#each links as { title, href, icon }}
 				<li>
 					<a class="btn btn-ghost w-full" target="_blank" {href}>
 						{#if icon == 'github'}
-							<Github class="text-2xl" />
+							<Github class="text-xl" />
 						{/if}
 						{#if title}
 							{title}

@@ -1,14 +1,13 @@
 <script>
 	import Close from '$lib/icons/Close.svelte';
-	import Shield from '$lib/icons/Shield.svelte';
 </script>
 
-<label for="privacyModal" class="btn btn-ghost w-full">
-	<Shield class="text-2xl" /><span>Security</span>
+<label for="privacyModal" {...$$props}>
+	<slot />
 </label>
 
 <input type="checkbox" id="privacyModal" class="modal-toggle" />
-<div class="modal overscroll-none" role="dialog">
+<div class="modal" role="dialog">
 	<div class="modal-box flex flex-col gap-4 text-base-content">
 		<h1 class="text-3xl font-bold">Data security</h1>
 		<p>
