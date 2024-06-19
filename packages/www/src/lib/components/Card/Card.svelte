@@ -16,11 +16,11 @@
 	$: isTabsShown = isOpen && tabs.length > 0;
 </script>
 
-<div class="card m-2 flex flex-grow flex-col overflow-hidden rounded shadow-2xl">
+<div class="card m-2 flex flex-grow flex-col rounded shadow-2xl">
 	<div
 		role="toolbar"
 		tabindex="0"
-		class="bg-primary p-2 {isTabsShown ? 'pb-0' : ''} flex-none cursor-pointer"
+		class="rounded-t bg-primary p-2 {isTabsShown ? 'pb-0' : ''} flex-none cursor-pointer"
 		on:click={() => (isOpen = !isOpen)}
 		on:keypress={() => (isOpen = !isOpen)}
 	>
@@ -32,7 +32,7 @@
 		</div>
 	</div>
 	{#if isOpen}
-		<div class="card-body flex-grow overflow-auto p-0 text-base-content" transition:slide>
+		<div class="card-body flex-grow p-0 text-base-content" transition:slide>
 			<slot />
 		</div>
 	{/if}

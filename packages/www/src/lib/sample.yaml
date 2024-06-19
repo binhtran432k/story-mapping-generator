@@ -1,0 +1,17 @@
+activities:
+  - label: Sally the cashier
+    tasks:
+      - label: Setup Register
+        stories:
+          - Open register
+          - Enter credentials
+          - Count Money
+          - Record Start Balance
+          - Login using badge
+      - label: Check out customer
+        stories:
+          - Add items
+          - Calculate tax
+          - Scan item
+          - Enter item manually
+          - ...

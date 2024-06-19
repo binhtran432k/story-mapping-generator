@@ -54,6 +54,8 @@
 				fit: true,
 				center: true
 			});
+			// Make sure the pan zoom has proper size
+			pzoom.resize();
 			const { pan, zoom } = state;
 			if (pan !== undefined && zoom !== undefined && Number.isFinite(zoom)) {
 				pzoom.zoom(zoom);

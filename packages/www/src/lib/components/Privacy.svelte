@@ -7,7 +7,7 @@
 </label>
 
 <input type="checkbox" id="privacyModal" class="modal-toggle" />
-<div class="modal" role="dialog">
+<div class="modal normal-case" role="dialog">
 	<div class="modal-box flex flex-col gap-4 text-base-content">
 		<h1 class="text-3xl font-bold">Data security</h1>
 		<p>
@@ -17,7 +17,8 @@
 			It's stored in the URL, and the browser's local storage only.
 		</p>
 		<p>
-			Mermaid live editor is a fully client side application, that will also work as an offline <a
+			Story Mapping Generator live editor is a fully client side application, that will also work as
+			an offline <a
 				href="https://web.dev/explore/progressive-web-apps"
 				class="link"
 				target="_blank"

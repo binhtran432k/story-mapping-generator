@@ -3,7 +3,6 @@
 	import Close from '$lib/icons/Close.svelte';
 	import Privacy from './Privacy.svelte';
 	import Github from '$lib/icons/Github.svelte';
-	import clsx from 'clsx';
 	import Shield from '$lib/icons/Shield.svelte';
 
 	let isMenuOpen = false;
@@ -48,10 +47,9 @@
 	/>
 
 	<div
-		class={clsx(
-			'text w-full bg-primary uppercase lg:flex lg:w-auto lg:items-center',
-			isMenuOpen ? 'absolute left-0 top-full flex p-2 lg:static lg:p-0' : 'hidden'
-		)}
+		class="text w-full bg-primary uppercase lg:flex lg:w-auto lg:items-center {isMenuOpen
+			? 'absolute left-0 top-full flex p-2 lg:static lg:p-0'
+			: 'hidden'}"
 	>
 		<!-- <Theme /> -->
 		<ul class="w-full items-center justify-between pt-2 lg:flex lg:pt-0">
