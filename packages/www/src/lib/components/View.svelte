@@ -109,5 +109,5 @@
 </script>
 
 <div id="view" bind:this={view} class="h-full p-2">
-	<div id="container" bind:this={container} class="h-full overflow-auto" class:hidden={hide} />
+	<div id="container" bind:this={container} class="h-full overflow-auto {hide && 'invisible'}" />
 </div>
