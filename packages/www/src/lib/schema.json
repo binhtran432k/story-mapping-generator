@@ -1,0 +1,48 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"definitions": {
+		"task": {
+			"type": "object",
+			"required": ["label"],
+			"description": "A Task of Activity",
+			"properties": {
+				"label": { "type": "string", "description": "A label of Task" },
+				"stories": {
+					"type": "array",
+					"description": "A List of stories/subtasks",
+					"items": {
+						"type": "string",
+						"description": "A Story/Subtask of Task"
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		"activity": {
+			"type": "object",
+			"description": "An Activity of Story mapping",
+			"required": ["label"],
+			"properties": {
+				"label": { "type": "string", "description": "A label of Activity" },
+				"tasks": {
+					"type": "array",
+					"description": "A List of tasks",
+					"items": {
+						"$ref": "#/definitions/task"
+					}
+				}
+			},
+			"additionalProperties": false
+		}
+	},
+	"properties": {
+		"activities": {
+			"type": "array",
+			"description": "A List of activities",
+			"items": {
+				"$ref": "#/definitions/activity"
+			}
+		}
+	},
+	"additionalProperties": false
+}
