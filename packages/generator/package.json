@@ -1,0 +1,22 @@
+{
+	"name": "story-mapping-generator",
+	"type": "module",
+	"module": "./src/index.js",
+	"exports": {
+		".": "./src/index.js"
+	},
+	"scripts": {
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write ."
+	},
+	"devDependencies": {
+		"@types/eslint": "^8.56.7",
+		"eslint": "^9.0.0",
+		"eslint-config-prettier": "^9.1.0",
+		"prettier": "^3.1.1",
+		"@types/bun": "latest"
+	},
+	"dependencies": {
+		"yaml": "^2.4.5"
+	}
+}

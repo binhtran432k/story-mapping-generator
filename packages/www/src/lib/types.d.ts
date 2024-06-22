@@ -9,7 +9,10 @@ export interface Tab {
 }
 
 export interface State {
+	code: string;
+	updateDiagram: boolean;
 	pan?: { x: number; y: number };
+	errors: string[];
 	zoom?: number;
 }
 

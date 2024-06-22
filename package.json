@@ -1,19 +1,21 @@
 {
-  "name": "story-mapping-generator-monorepo",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "check": "bun run --cwd packages/www check",
-    "lint": "bun run lint:www",
-    "lint:www": "bun run --cwd packages/www lint",
-    "build": "bun run --cwd packages/www build"
-  },
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  }
+	"name": "story-mapping-generator-monorepo",
+	"private": true,
+	"workspaces": [
+		"packages/*"
+	],
+	"scripts": {
+		"check": "bun run --cwd packages/www check",
+		"dev": "bun run --cwd packages/www dev",
+		"lint": "bun run lint:www && bun run lint:generator",
+		"lint:www": "bun run --cwd packages/www lint",
+		"lint:generator": "bun run --cwd packages/generator lint",
+		"format": "bun run format:www && bun run format:generator",
+		"format:www": "bun run --cwd packages/www format",
+		"format:generator": "bun run --cwd packages/generator format",
+		"build": "bun run --cwd packages/www build"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	}
 }

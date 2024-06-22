@@ -1,5 +1,6 @@
 import { derived, get, writable } from 'svelte/store';
 import { persist } from './persist';
+import sample from '$lib/sample.yaml?raw';
 
 /**
  * @typedef {import('$lib/types').State} State
@@ -7,7 +8,11 @@ import { persist } from './persist';
  */
 
 /** @type {State} */
-const defaultState = {};
+const defaultState = {
+	code: sample,
+	updateDiagram: true,
+	errors: []
+};
 
 // inputStateStore handles all updates and is shared externally when exporting via URL, History, etc.
 export const inputStateStore = persist(writable(defaultState), 'codeStore');
@@ -50,5 +55,19 @@ export const stateStore = derived(
 export const updateCodeStore = (newState) => {
 	inputStateStore.update((state) => {
 		return { ...state, ...newState };
+	});
+};
+
+/**
+ * @param {string} code
+ * @param {{ updateDiagram?: boolean; resetPanZoom?: boolean }} param1
+ */
+export const updateCode = (code, { updateDiagram = false, resetPanZoom = false } = {}) => {
+	inputStateStore.update((state) => {
+		if (resetPanZoom) {
+			state.pan = undefined;
+			state.zoom = undefined;
+		}
+		return { ...state, code, updateDiagram };
 	});
 };
