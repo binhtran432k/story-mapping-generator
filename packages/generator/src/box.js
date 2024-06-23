@@ -51,9 +51,10 @@ export function processBoxPosition(rootPosition, box) {
 
 /**
  * @param {Box} box
+ * @param {string} fill
  * @returns {SvgElement[]}
  */
-export function getBoxSvgs(box) {
+export function getBoxSvgs(box, fill) {
 	return [
 		newRect({
 			x: box.x,
@@ -63,7 +64,7 @@ export function getBoxSvgs(box) {
 			rx: 3,
 			ry: 3,
 			filter: 'url(#box)',
-			fill: 'orange'
+			fill
 		}),
 		...box.lines.map(getLineSvg)
 	];
