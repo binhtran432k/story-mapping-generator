@@ -1,6 +1,7 @@
 <script>
-	import { stateStore, updateCodeStore } from '$lib/utils/state';
+	import { stateStore, updateCodeStore, updateValidDiagram } from '$lib/utils/state';
 	import { onMount } from 'svelte';
+	import { renderDiagram } from 'story-mapping-generator';
 
 	/**
 	 * @typedef {import('$lib/types').State} State
@@ -18,9 +19,8 @@
 	let pzoom;
 
 	// Normal variables
+	let code = '';
 	let hide = false;
-	/** @type {string} */
-	let svg;
 
 	/** @type {Timer|undefined} */
 	let panZoomDebounce;
@@ -34,6 +34,16 @@
 			const zoom = pzoom.getZoom();
 			updateCodeStore({ pan, zoom });
 		}, 300);
+	};
+
+	const handleDisablePanZoom = () => {
+		if (pzoom) {
+			pzoom.disableControlIcons();
+			pzoom.disableDblClickZoom();
+			pzoom.disablePan();
+			pzoom.disableZoom();
+			pzoom.disableMouseWheelZoom();
+		}
 	};
 
 	/**
@@ -65,22 +75,31 @@
 		});
 	};
 
-	// HACK: hard code generated svg
-	const generatedSvg = `<svg xmlns="http://www.w3.org/2000/svg" id='graph-div' width="10em" height="10em" viewBox="0 0 32 32" ><path fill="currentColor" d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2m-4.5 9A2.5 2.5 0 1 1 9 13.5a2.48 2.48 0 0 1 2.5-2.5M16 24a8.11 8.11 0 0 1-7-4h14a8.11 8.11 0 0 1-7 4m4.5-8a2.5 2.5 0 1 1 2.5-2.5a2.48 2.48 0 0 1-2.5 2.5"/></svg>`;
-
 	/**
 	 * @param {ValidatedState} state
 	 */
-	const handleStateChange = (state) => {
+	const handleStateChange = async (state) => {
+		if (state.errors.length) {
+			if (state.validDiagram) {
+				updateValidDiagram(false);
+			}
+			handleDisablePanZoom();
+			return;
+		}
 		if (!view || !container) {
 			throw new Error('view and container must be binded');
 		}
-		const scroll = view.parentElement?.scrollTop;
-		if (generatedSvg === svg) {
+		// Do not render if there is no change in Code/Config/PanZoom
+		if (code === state.code) {
 			return;
 		}
-		svg = generatedSvg;
+
+		code = state.code;
+		const scroll = view.parentElement?.scrollTop;
+		const svg = renderDiagram('graph-div', code);
+
 		if (svg.length > 0) {
+			updateValidDiagram(true);
 			container.innerHTML = svg;
 			handlePanZoom(state);
 			/** @type {SVGSVGElement|null} */
@@ -94,13 +113,15 @@
 			if (view.parentElement && scroll) {
 				view.parentElement.scrollTop = scroll;
 			}
+		} else {
+			updateValidDiagram(false);
 		}
 	};
 
 	onMount(async () => {
 		panzoom = (await import('svg-pan-zoom')).default;
 		stateStore.subscribe((state) => {
-			handleStateChange(state);
+			void handleStateChange(state);
 		});
 		window.addEventListener('resize', () => {
 			if (pzoom) {
@@ -110,6 +131,19 @@
 	});
 </script>
 
-<div id="view" bind:this={view} class="h-full p-2">
-	<div id="container" bind:this={container} class="h-full overflow-auto {hide && 'invisible'}" />
+<div id="view" bind:this={view} class="relative h-full p-2">
+	<div
+		class="absolute left-0 top-0 z-10 flex max-h-full w-full flex-col overflow-auto bg-error text-error-content"
+		class:hidden={!$stateStore.errors.length}
+	>
+		{#each $stateStore.errors as error}
+			<div class="p-1 px-2">{error}</div>
+		{/each}
+	</div>
+	<div
+		id="container"
+		bind:this={container}
+		class="h-full overflow-auto {hide && 'invisible'}"
+		class:opacity-50={$stateStore.errors.length}
+	/>
 </div>
