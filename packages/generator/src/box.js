@@ -50,11 +50,11 @@ export function processBoxPosition(rootPosition, box) {
 }
 
 /**
- * @param {Box} box
  * @param {string} fill
+ * @param {Box} box
  * @returns {SvgElement[]}
  */
-export function getBoxSvgs(box, fill) {
+export function getBoxSvgs(fill, box) {
 	return [
 		newRect({
 			x: box.x,

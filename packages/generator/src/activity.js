@@ -69,5 +69,5 @@ export function processActivityChildrenPosition(activityLabelHeight, taskLabelHe
  * @returns {SvgElement[]}
  */
 export function getActivitySvgs(activity) {
-	return [...getBoxSvgs(activity.label, 'orange'), ...activity.tasks.flatMap(getTaskSvgs)];
+	return [...getBoxSvgs('orange', activity.label), ...activity.tasks.flatMap(getTaskSvgs)];
 }

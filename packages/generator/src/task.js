@@ -4,9 +4,12 @@
  */
 
 import { getBoxSvgs, newBox, processBoxPosition, processBoxSize } from './box';
+import { MARGIN } from './constants';
+import { getGroupPositions } from './position';
+import { getGroupInColSize, getGroupSize } from './size';
 
 /**
- * @param {{label: unknown, stories: string}} taskYaml
+ * @param {{label: unknown, numOfCol?: number, stories?: string[]}} taskYaml
  * @returns {Task}
  */
 export function newTask(taskYaml) {
@@ -15,8 +18,8 @@ export function newTask(taskYaml) {
 	}
 	return {
 		label: newBox(taskYaml.label),
-		numOfCol: 1,
-		stories: []
+		numOfCol: taskYaml.numOfCol ?? 1,
+		stories: taskYaml.stories ? taskYaml.stories.map(newBox) : []
 	};
 }
 
@@ -25,8 +28,15 @@ export function newTask(taskYaml) {
  */
 export function processTaskSize(task) {
 	processBoxSize(task.label);
-	task.width = task.label.width;
-	task.height = task.label.height;
+	task.stories.forEach(processBoxSize);
+
+	// @ts-expect-error activity.tasks has already satisfied Size[]
+	const storiesSize = getGroupSize(task.stories, task.numOfCol, MARGIN);
+	// @ts-expect-error activity.label has already satisfied Size
+	const taskSize = getGroupInColSize([task.label, storiesSize], MARGIN);
+
+	task.width = taskSize.width;
+	task.height = taskSize.height;
 }
 
 /**
@@ -38,6 +48,17 @@ export function processTaskChildrenPosition(taskLabelHeight, task) {
 		throw new Error('activiy.x and activity.y must be defined');
 	}
 	processBoxPosition({ x: task.x, y: task.y }, task.label);
+
+	// Process Story Positions
+	const storiesY = task.y + taskLabelHeight + MARGIN;
+	const positions = getGroupPositions(
+		{ x: task.x, y: storiesY },
+		// @ts-expect-error task.stories already satisfied Size[]
+		task.stories,
+		task.numOfCol,
+		MARGIN
+	);
+	task.stories.forEach((story, i) => processBoxPosition(positions[i], story));
 }
 
 /**
@@ -45,5 +66,8 @@ export function processTaskChildrenPosition(taskLabelHeight, task) {
  * @returns {SvgElement[]}
  */
 export function getTaskSvgs(task) {
-	return [...getBoxSvgs(task.label, 'cyan')];
+	return [
+		...getBoxSvgs('cyan', task.label),
+		...task.stories.flatMap(getBoxSvgs.bind(undefined, 'yellow'))
+	];
 }

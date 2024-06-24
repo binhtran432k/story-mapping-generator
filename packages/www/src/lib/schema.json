@@ -7,6 +7,7 @@
 			"description": "A Task of Activity",
 			"properties": {
 				"label": { "type": "string", "description": "A label of Task" },
+				"numOfCol": { "type": "number", "minimum": 1, "default": 1 },
 				"stories": {
 					"type": "array",
 					"description": "A List of stories/subtasks",
