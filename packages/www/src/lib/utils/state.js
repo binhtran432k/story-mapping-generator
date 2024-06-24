@@ -4,24 +4,33 @@ import sample from '$lib/sample.yaml?raw';
 
 /**
  * @typedef {import('$lib/types').State} State
+ * @typedef {import('$lib/types').GeneratedState} GeneratedState
  * @typedef {import('$lib/types').ValidatedState} ValidatedState
  */
 
 /** @type {State} */
 const defaultState = {
-	code: sample,
-	updateDiagram: true,
-	errors: []
+	code: sample
 };
 
 // inputStateStore handles all updates and is shared externally when exporting via URL, History, etc.
 export const inputStateStore = persist(writable(defaultState), 'codeStore');
 
+/** @type {GeneratedState} */
+const defaultGeneratedState = {
+	validDiagram: false,
+	errors: []
+};
+
+export const generatedStateStore = writable(defaultGeneratedState);
+
 /** @type {ValidatedState} */
 export const currentState = (() => {
 	const state = get(inputStateStore);
+	const generatedState = get(generatedStateStore);
 	return {
-		...state
+		...state,
+		...generatedState
 	};
 })();
 
@@ -29,21 +38,23 @@ export const currentState = (() => {
  * Process and Validate State
  *
  * @param {State} state
+ * @param {GeneratedState} tmpState
  * @returns {Promise<ValidatedState>}
  */
-const processState = async (state) => {
+const processState = async (state, tmpState) => {
 	/** @type {ValidatedState} */
 	const processed = {
-		...state
+		...state,
+		...tmpState
 	};
 	return processed;
 };
 
 // All internal reads should be done via stateStore, but it should not be persisted/shared externally.
 export const stateStore = derived(
-	[inputStateStore],
-	([state], set) => {
-		void processState(state).then(set);
+	[inputStateStore, generatedStateStore],
+	([state, tmpState], set) => {
+		void processState(state, tmpState).then(set);
 	},
 	currentState
 );
@@ -60,14 +71,23 @@ export const updateCodeStore = (newState) => {
 
 /**
  * @param {string} code
- * @param {{ updateDiagram?: boolean; resetPanZoom?: boolean }} param1
+ * @param {{ resetPanZoom?: boolean }} param1
  */
-export const updateCode = (code, { updateDiagram = false, resetPanZoom = false } = {}) => {
+export const updateCode = (code, { resetPanZoom = false } = {}) => {
 	inputStateStore.update((state) => {
 		if (resetPanZoom) {
 			state.pan = undefined;
 			state.zoom = undefined;
 		}
-		return { ...state, code, updateDiagram };
+		return { ...state, code };
+	});
+};
+
+/**
+ * @param {boolean} validDiagram
+ */
+export const updateValidDiagram = (validDiagram) => {
+	generatedStateStore.update((state) => {
+		return { ...state, validDiagram };
 	});
 };

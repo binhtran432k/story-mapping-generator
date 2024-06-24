@@ -8,9 +8,10 @@ import {
 	getActivitySvgs,
 	newActivity,
 	processActivityChildrenPosition,
-	processActivitySize
+	processActivitySize,
+	reprocessActivitySize
 } from './activity';
-import { MARGIN } from './constants';
+import { FONT_SIZE, MARGIN } from './constants';
 import { newDefs, newFeDropShadow, newFilter, newRect, newSvg } from './svg';
 
 /**
@@ -19,7 +20,7 @@ import { newDefs, newFeDropShadow, newFilter, newRect, newSvg } from './svg';
  */
 export function newDiagram(diagramYaml) {
 	return {
-		activities: diagramYaml.activities ? diagramYaml.activities.map(newActivity) : []
+		activities: diagramYaml?.activities ? diagramYaml.activities.map(newActivity) : []
 	};
 }
 
@@ -47,7 +48,19 @@ function processDiagram(diagram) {
 		processActivityChildrenPosition.bind(undefined, activityLabelHeight, taskLabelHeight)
 	);
 
-	// Process Diagram Size
+	processDiagramSize(activityLabelHeight, taskLabelHeight, diagram);
+}
+
+/**
+ * @param {number} activityLabelHeight
+ * @param {number} taskLabelHeight
+ * @param {Diagram} diagram
+ */
+function processDiagramSize(activityLabelHeight, taskLabelHeight, diagram) {
+	diagram.activities.forEach(
+		reprocessActivitySize.bind(undefined, activityLabelHeight, taskLabelHeight)
+	);
+
 	const widths = diagram.activities.map((activity) => {
 		if (typeof activity.x === 'undefined' || typeof activity.width === 'undefined') {
 			throw new Error('activity.x and activity.width must be defined');
@@ -131,6 +144,7 @@ export function getDiagramSvg(id, diagram) {
 		{
 			width: diagram.width,
 			height: diagram.height,
+			style: { 'font-family': 'arial,sans-serif', 'font-size': `${FONT_SIZE}px` },
 			viewBox: { x: 0, y: 0, width: diagram.width, height: diagram.height },
 			id
 		},

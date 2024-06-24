@@ -1,5 +1,6 @@
 <script>
 	import Card from '$lib/components/Card/Card.svelte';
+	import DownloadButton from '$lib/components/DownloadButton.svelte';
 	import Editor from '$lib/components/Editor.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import View from '$lib/components/View.svelte';
@@ -15,6 +16,9 @@
 		</div>
 		<div class="flex flex-1 flex-col">
 			<Card title="Diagram" isCloseable={false}>
+				<div slot="actions" class="flex flex-row items-center">
+					<DownloadButton />
+				</div>
 				<View />
 			</Card>
 			<div class="mx-2 rounded p-2 shadow md:hidden">

@@ -4,7 +4,7 @@
  * @typedef {import('./types').SvgElement} SvgElement
  */
 
-import { LINE_HEIGHT, LINE_MARGIN, LINE_OFFSET, PADDING } from './constants';
+import { FONT_SIZE, LINE_MARGIN, LINE_OFFSET, PADDING } from './constants';
 import { getLineSvg, newLine, processLineSize } from './line';
 import { getGroupInColSize, getPaddingSize } from './size';
 import { newRect } from './svg';
@@ -25,7 +25,7 @@ export function newBox(text) {
 export function processBoxSize(box) {
 	box.lines.forEach(processLineSize);
 	// @ts-expect-error box.lines satisfied Size[]
-	const boxSize = getPaddingSize(getGroupInColSize(box.lines), PADDING);
+	const boxSize = getPaddingSize(getGroupInColSize(box.lines, LINE_MARGIN), PADDING);
 	box.width = boxSize.width;
 	box.height = boxSize.height;
 }
@@ -43,7 +43,7 @@ export function processBoxPosition(rootPosition, box) {
 		(y, line) => {
 			line.x = linesX;
 			line.y = y;
-			return y + LINE_HEIGHT + LINE_MARGIN;
+			return y + FONT_SIZE + LINE_MARGIN;
 		},
 		rootPosition.y + PADDING + LINE_OFFSET
 	);

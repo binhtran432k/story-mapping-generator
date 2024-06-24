@@ -9,5 +9,9 @@ import { parse } from 'yaml';
  * @returns {string}
  */
 export function renderDiagram(id, code) {
-	return getStringFromSvg(getDiagramSvg(id, newDiagram(parse(code))));
+	const diagram = newDiagram(parse(code));
+	if (!diagram.activities.length) {
+		return '';
+	}
+	return getStringFromSvg(getDiagramSvg(id, diagram));
 }

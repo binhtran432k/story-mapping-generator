@@ -43,6 +43,23 @@ export function processTaskSize(task) {
  * @param {number} taskLabelHeight
  * @param {Task} task
  */
+export function reprocessTaskSize(taskLabelHeight, task) {
+	const labelSize = { width: task.label.width, height: taskLabelHeight };
+	task.stories.forEach(processBoxSize);
+
+	// @ts-expect-error activity.tasks has already satisfied Size[]
+	const storiesSize = getGroupSize(task.stories, task.numOfCol, MARGIN);
+	// @ts-expect-error activity.label has already satisfied Size
+	const taskSize = getGroupInColSize([labelSize, storiesSize], MARGIN);
+
+	task.width = taskSize.width;
+	task.height = taskSize.height;
+}
+
+/**
+ * @param {number} taskLabelHeight
+ * @param {Task} task
+ */
 export function processTaskChildrenPosition(taskLabelHeight, task) {
 	if (typeof task.x === 'undefined' || typeof task.y === 'undefined') {
 		throw new Error('activiy.x and activity.y must be defined');

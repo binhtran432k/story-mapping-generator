@@ -6,7 +6,13 @@
 import { getBoxSvgs, newBox, processBoxPosition, processBoxSize } from './box';
 import { MARGIN } from './constants';
 import { getGroupInColSize, getGroupInRowSize } from './size';
-import { getTaskSvgs, newTask, processTaskChildrenPosition, processTaskSize } from './task';
+import {
+	getTaskSvgs,
+	newTask,
+	processTaskChildrenPosition,
+	processTaskSize,
+	reprocessTaskSize
+} from './task';
 
 /**
  * @param {{label: unknown, tasks: any}} activityYaml
@@ -43,10 +49,34 @@ export function processActivitySize(activity) {
  * @param {number} taskLabelHeight
  * @param {Activity} activity
  */
+export function reprocessActivitySize(activityLabelHeight, taskLabelHeight, activity) {
+	const labelSize = { width: activity.label.width, height: activityLabelHeight };
+	activity.tasks.forEach(reprocessTaskSize.bind(undefined, taskLabelHeight));
+
+	// @ts-expect-error activity.tasks has already satisfied Size[]
+	const tasksSize = getGroupInRowSize(activity.tasks, MARGIN);
+	// @ts-expect-error activity.label has already satisfied Size
+	const activitySize = getGroupInColSize([labelSize, tasksSize], MARGIN);
+
+	activity.width = activitySize.width;
+	activity.height = activitySize.height;
+}
+
+/**
+ * @param {number} activityLabelHeight
+ * @param {number} taskLabelHeight
+ * @param {Activity} activity
+ */
 export function processActivityChildrenPosition(activityLabelHeight, taskLabelHeight, activity) {
-	if (typeof activity.x === 'undefined' || typeof activity.y === 'undefined') {
-		throw new Error('activiy.x and activity.y must be defined');
+	if (
+		typeof activity.x === 'undefined' ||
+		typeof activity.y === 'undefined' ||
+		typeof activity.height === 'undefined' ||
+		typeof activity.label.height === 'undefined'
+	) {
+		throw new Error('activiy positions and sizes must be defined');
 	}
+	activity.height += activityLabelHeight - activity.label.height;
 	processBoxPosition({ x: activity.x, y: activity.y }, activity.label);
 
 	// Process Task Positions

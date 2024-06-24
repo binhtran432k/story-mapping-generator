@@ -1,6 +1,6 @@
 <script>
 	import { onDestroy, onMount } from 'svelte';
-	import { updateCodeStore, stateStore, updateCode } from '$lib/utils/state';
+	import { stateStore, updateCode, generatedStateStore } from '$lib/utils/state';
 
 	/** @type {HTMLDivElement|undefined} */
 	let divElement;
@@ -58,7 +58,10 @@
 				monaco.editor.setModelMarkers(model, owner, markers);
 
 				// Update the state store
-				updateCodeStore({ errors: markers.map((marker) => marker.message) });
+				generatedStateStore.update((state) => ({
+					...state,
+					errors: markers.map((marker) => marker.message)
+				}));
 			}
 		});
 		editor = monaco.editor.create(divElement, {

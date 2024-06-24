@@ -10,10 +10,13 @@ export interface Tab {
 
 export interface State {
 	code: string;
-	updateDiagram: boolean;
 	pan?: { x: number; y: number };
-	errors: string[];
 	zoom?: number;
 }
 
-export interface ValidatedState extends State {}
+export interface GeneratedState {
+	validDiagram: boolean;
+	errors: string[];
+}
+
+export interface ValidatedState extends State, GeneratedState {}

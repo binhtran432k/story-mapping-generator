@@ -20,7 +20,9 @@
 	<div
 		role="toolbar"
 		tabindex="0"
-		class="rounded-t bg-primary p-2 {isTabsShown ? 'pb-0' : ''} flex-none cursor-pointer"
+		class="rounded-t bg-primary p-2 text-primary-content {isTabsShown
+			? 'pb-0'
+			: ''} flex-none cursor-pointer"
 		on:click={() => (isOpen = !isOpen)}
 		on:keypress={() => (isOpen = !isOpen)}
 	>

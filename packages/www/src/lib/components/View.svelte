@@ -1,5 +1,5 @@
 <script>
-	import { stateStore, updateCodeStore } from '$lib/utils/state';
+	import { stateStore, updateCodeStore, updateValidDiagram } from '$lib/utils/state';
 	import { onMount } from 'svelte';
 	import { renderDiagram } from 'story-mapping-generator';
 
@@ -37,14 +37,13 @@
 	};
 
 	const handleDisablePanZoom = () => {
-		if (!pzoom) {
-			throw new Error('pan zoom did not define yet!');
+		if (pzoom) {
+			pzoom.disableControlIcons();
+			pzoom.disableDblClickZoom();
+			pzoom.disablePan();
+			pzoom.disableZoom();
+			pzoom.disableMouseWheelZoom();
 		}
-		pzoom.disableControlIcons();
-		pzoom.disableDblClickZoom();
-		pzoom.disablePan();
-		pzoom.disableZoom();
-		pzoom.disableMouseWheelZoom();
 	};
 
 	/**
@@ -81,6 +80,9 @@
 	 */
 	const handleStateChange = async (state) => {
 		if (state.errors.length) {
+			if (state.validDiagram) {
+				updateValidDiagram(false);
+			}
 			handleDisablePanZoom();
 			return;
 		}
@@ -97,6 +99,7 @@
 		const svg = renderDiagram('graph-div', code);
 
 		if (svg.length > 0) {
+			updateValidDiagram(true);
 			container.innerHTML = svg;
 			handlePanZoom(state);
 			/** @type {SVGSVGElement|null} */
@@ -110,6 +113,8 @@
 			if (view.parentElement && scroll) {
 				view.parentElement.scrollTop = scroll;
 			}
+		} else {
+			updateValidDiagram(false);
 		}
 	};
 
@@ -128,10 +133,12 @@
 
 <div id="view" bind:this={view} class="relative h-full p-2">
 	<div
-		class="absolute left-1/2 w-80 -translate-x-1/2 bg-error p-2 text-error-content"
+		class="absolute left-0 top-0 z-10 flex max-h-full w-full flex-col overflow-auto bg-error text-error-content"
 		class:hidden={!$stateStore.errors.length}
 	>
-		{$stateStore.errors}
+		{#each $stateStore.errors as error}
+			<div class="p-1 px-2">{error}</div>
+		{/each}
 	</div>
 	<div
 		id="container"
